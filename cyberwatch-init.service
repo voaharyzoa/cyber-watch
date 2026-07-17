@@ -1,0 +1,10 @@
+[Unit]
+Description=cyber-watch - init/migration DB (core)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/cyberwatch
+ExecStart=/usr/bin/docker compose run --rm cyberwatch core
+RemainAfterExit=no

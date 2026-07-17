@@ -1,0 +1,20 @@
+[Unit]
+Description=cyber-watch - watcher temps reel (run)
+After=docker.service network-online.target cyberwatch-init.service
+Requires=docker.service
+Wants=network-online.target
+Wants=cyberwatch-init.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/cyberwatch
+# "up" (sans -d) pour que systemd garde la main sur le process et gere le restart
+ExecStartPre=/usr/bin/docker compose pull --ignore-buildable
+ExecStart=/usr/bin/docker compose up --build
+ExecStop=/usr/bin/docker compose down
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

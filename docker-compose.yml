@@ -1,0 +1,20 @@
+services:
+  cyberwatch:
+    build:
+      context: .
+      dockerfile: DockerFile   # nom reel du fichier (casse imposee par le montage /mnt/c, insensible a la casse)
+    image: cyberwatch:latest
+    container_name: cyberwatch
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config/sources.yaml:/app/config/sources.yaml:ro
+      - cyberwatch-data:/app/data
+    command: ["run"]
+    # pas de ports exposés : le service ne fait que poller des sources
+    # et notifier via slack/teams/email en sortant
+
+volumes:
+  cyberwatch-data:
+    driver: local

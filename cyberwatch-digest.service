@@ -1,0 +1,10 @@
+[Unit]
+Description=cyber-watch - digest quotidien (email)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/cyberwatch
+# run --rm : conteneur ephemere, partage le meme volume de donnees que le watcher
+ExecStart=/usr/bin/docker compose run --rm cyberwatch digest

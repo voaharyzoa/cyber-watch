@@ -1,0 +1,35 @@
+[project]
+name = "cyberwatch"
+version = "0.2.0"
+description = "Veille cybersécurité: CVE/advisories + news + mises à jour produits + threat intel"
+requires-python = ">=3.11"
+dependencies = [
+    "feedparser>=6.0.11",
+    "requests>=2.31.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.1",
+    "PyYAML>=6.0.1",
+    "APScheduler>=3.10.4",
+    "SQLAlchemy>=2.0.30",
+    "pydantic>=2.7.0",
+    "rapidfuzz>=3.9.0",
+    "beautifulsoup4>=4.12.3",
+    "tenacity>=8.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-mock>=3.14.0",
+    "responses>=0.25.0",
+]
+
+[project.scripts]
+cyberwatch = "cyberwatch.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,11 @@
+[Unit]
+Description=Declenche le digest cyber-watch tous les jours a 08:00
+
+[Timer]
+# Correspond a notifications.digest.frequency: daily / time: "08:00" du config.yaml
+OnCalendar=*-*-* 08:00:00
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

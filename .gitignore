@@ -1,0 +1,51 @@
+# --- Secrets / config sensible ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+
+# --- Environnements virtuels ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Tests / couverture ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# --- Données applicatives (DB locale, ne pas versionner) ---
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/
+
+# --- Docker ---
+*.log
+
+# --- IDE / éditeurs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- WSL / Windows (fichiers de verrouillage, cas /mnt/c) ---
+*.orig
