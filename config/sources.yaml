@@ -1,0 +1,133 @@
+# Configuration des sources de veille cyber
+# type: vulnerability | security_news | product_update | threat_intel | advisory_vendor
+# interval: fréquence de polling en secondes
+
+sources:
+  # --- Vulnérabilités (CVE / advisories officiels) ---
+  - name: nvd
+    module: nist_nvd
+    enabled: true
+    type: vulnerability
+    interval: 900          # 15 min, l'API NVD a un rate-limit strict
+    params:
+      api_key_env: NVD_API_KEY
+      results_per_page: 100
+      min_cvss: 4.0        # ignore le bruit < 4.0
+
+  - name: zdi
+    module: zdi
+    enabled: true
+    type: vulnerability
+    interval: 1800
+    params:
+      feed_url: "https://www.zerodayinitiative.com/rss/published/"
+
+  - name: cert_fr
+    module: cert_fr
+    enabled: true
+    type: vulnerability
+    interval: 1800
+    params:
+      feed_url: "https://www.cert.ssi.gouv.fr/avis/feed/"
+      alerte_feed_url: "https://www.cert.ssi.gouv.fr/alerte/feed/"
+
+  - name: msrc
+    module: msrc
+    enabled: true
+    type: vulnerability
+    interval: 3600
+    params:
+      api_url: "https://api.msrc.microsoft.com/cvrf/v3.0/updates"
+
+  # --- Actualités cybersécurité ---
+  - name: hacker_news
+    module: hacker_news_sec
+    enabled: true
+    type: security_news
+    interval: 1800
+    params:
+      feed_url: "https://feeds.feedburner.com/TheHackersNews"
+
+  - name: bleepingcomputer
+    module: hacker_news_sec
+    enabled: true
+    type: security_news
+    interval: 1800
+    params:
+      feed_url: "https://www.bleepingcomputer.com/feed/"
+
+  - name: krebs_on_security
+    module: krebs
+    enabled: true
+    type: security_news
+    interval: 3600
+    params:
+      feed_url: "https://krebsonsecurity.com/feed/"
+
+  # --- Blogs vendors / threat intel (advisories non-CVE) ---
+  - name: talos_intelligence
+    module: security_blogs
+    enabled: true
+    type: advisory_vendor
+    interval: 3600
+    params:
+      feed_url: "https://blog.talosintelligence.com/rss/"
+
+  - name: google_tag
+    module: security_blogs
+    enabled: true
+    type: threat_intel
+    interval: 3600
+    params:
+      feed_url: "https://blog.google/threat-analysis-group/rss/"
+
+  - name: unit42
+    module: security_blogs
+    enabled: true
+    type: threat_intel
+    interval: 3600
+    params:
+      feed_url: "https://unit42.paloaltonetworks.com/feed/"
+
+  # --- Mises à jour produits / releases suivies ---
+  - name: github_releases
+    module: github_releases
+    enabled: true
+    type: product_update
+    interval: 3600
+    params:
+      token_env: GITHUB_TOKEN
+      repos:
+        - kubernetes/kubernetes
+        - openssl/openssl
+        - hashicorp/vault
+        - nginx/nginx
+        - elastic/elasticsearch
+        - wireshark/wireshark
+
+  - name: vendor_changelog
+    module: vendor_changelog
+    enabled: false          # à activer une fois les URLs vendor confirmées
+    type: product_update
+    interval: 7200
+    params:
+      feeds:
+        - name: fortinet_psirt
+          url: "https://filestore.fortinet.com/fortiguard/rss/ir.xml"
+        - name: cisco_psirt
+          url: "https://sec.cloudapps.cisco.com/security/center/psirtrss20/CiscoSecurityAdvisory.xml"
+
+notifications:
+  realtime:
+    min_severity: high      # CRITICAL/HIGH => notif immédiate
+    types: [vulnerability, threat_intel]
+    channels: [slack, teams]
+  digest:
+    frequency: daily        # daily | weekly
+    time: "08:00"
+    types: [vulnerability, security_news, product_update, advisory_vendor]
+    channels: [email]
+
+database:
+  path: "data/watch.db"
+  dedup_similarity_threshold: 0.85   # rapprochement de titres entre sources
